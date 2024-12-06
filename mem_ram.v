@@ -6,8 +6,8 @@ module mem_ram
 #(parameter DATA_WIDTH=32, parameter ADDR_WIDTH=8)
 (
 	input [(DATA_WIDTH-1):0] data,
-	input [(ADDR_WIDTH-1):0] read_addr, write_addr,
-	input memwrite, memread, read_clock, write_clock,
+	input [(ADDR_WIDTH-1):0] addr,
+	input memwrite, memread, clock,
 	output reg [(DATA_WIDTH-1):0] saida_ram
 );
 	
@@ -15,18 +15,18 @@ module mem_ram
 	reg [DATA_WIDTH-1:0] ram[2**ADDR_WIDTH-1:0];
 
 	
-	always @ (posedge write_clock)
+	always @ (negedge clock)
 	begin
 		// Write
 		if (memwrite)
-			ram[write_addr] <= data;
+			ram[addr] <= data;
 	end
 	
-	always @ (posedge read_clock)
+	always @ (posedge clock)
 	begin
 		// Read
 		if(memread)
-		saida_ram <= ram[read_addr];
+		saida_ram <= ram[addr];
 	end
 	
 endmodule

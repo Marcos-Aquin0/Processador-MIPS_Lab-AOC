@@ -1,20 +1,22 @@
 module processador_teste#(parameter DATA_WIDTH=32, parameter ADDR_WIDTH=8)
-				  (reset, clock_fpga,
+				  (congela, clock_fpga, reset,
 				   opcode, rs, rt, rd, shamt, funct,imediato, salto,
-					switches, clock,
+					switches, //clock,
 				   saida_dado1, saida_dado2, valor_ULA, mux_loadi, mux_mem, teste_conc,
-					muxr1, muxr2, muxr3, promemtoreg, proloadi, aaaux, extensor1, aaaux2, eoin,
+					muxr_jump, muxr2, muxr3, promemtoreg, proloadi, aaaux, extensor1, aaaux2, zerum, eoin,
 				  segdp1, segdp2, segdp3, segdp4);
 					    
 //inputs e outputs de cada unidade para testar		  
-					 
-divisor_freq Chamada0 (.reset(reset), .clock_fpga(clock_fpga), .new_clock(clock1));
+
+input congela, clock_fpga;					 
+divisor_freq Chamada0 (.congela(congela), .clock_fpga(clock_fpga), .new_clock(clock));
 		
-input reset, clock_fpga;
-wire clock1;
-input clock;	
+//wire clock1; //clock correto para fpga
+wire clock;
+//input clock, 
+input reset;	
 		
-PC Chamada1 (.clock_pc(clock), .prox_end(aux_saida_jump), .halt(halt), .pc(aux_pc));
+PC Chamada1 (.clock_pc(clock), .reset(reset), .prox_end(aux_saida_jump), .halt(halt), .pc(aux_pc));
 //input clock, prox endereco vem do muxjump, halt da unidade de controle; output pc
 
 wire [31:0] aux_pc;
@@ -63,12 +65,15 @@ unidade_controle Chamada5 (.opcode(opcode), .AluOP(AluOP), .regdst(regdst),
 wire [3:0] AluOP;
 wire [1:0] regdst, memtoreg, alusrc, emd, loadi;
 wire jump, out, jumpreg, branch, memread, memwrite, regwrite, halt, nop, in;
+
+//testes///////////////////
 output reg [1:0] promemtoreg, proloadi;
 
 always@(*) begin
 promemtoreg = memtoreg;
 proloadi = loadi;
 end
+///////////////////////////
 
 ULA_controle Chamada6(.AluOP(AluOP), .funct(funct), .sinal_controle(sinal_aux_con));
 //aluop e funct inputs, sinal_controle output
@@ -90,11 +95,14 @@ BANCO_REG Chamada8(.clock(clock), .reg_write(regwrite), .reg_leitura1(rs),
 //dado1 e dado2 outputs
 			 
 wire [31:0] dado1, dado2;
+
+//testes/////////////
 output reg [31:0] saida_dado1, saida_dado2;
 always@(*) begin
 	saida_dado1 = dado1;
 	saida_dado2 = dado2;
 end
+//////////////////////////////////////
 
 mux6 Chamada9(.entrada1(dado2), .entrada2(aux_out_sinal1), .shamt(shamt), 
 				  .chave_mux6(alusrc), .saida_mux6(aux_saida_mux6));
@@ -107,22 +115,32 @@ ULA Chamada10(.A(dado1), .B(aux_saida_mux6), .enable(~nop),
 
 wire [31:0] aux_saida_ULA;
 wire ZERO;
-output [31:0] valor_ULA;
-assign valor_ULA = aux_saida_ULA;
+
+//testes////////////////
+output reg [31:0] valor_ULA;
+always@(*) begin
+	valor_ULA = aux_saida_ULA;
+end
+//////////////////////////////////////
+
 
 entrada_fpga Chamada11 (.switches(switches), .entrada_switch(aux_switch));
 
 wire [13:0] aux_switch;
 input [7:0] switches;
+
+////////testes////////////////////////
 output reg [13:0] aaaux, aaaux2;
 output reg [31:0] extensor1;
-output reg eoin;
+output reg eoin, zerum;
 always @(*) begin
 	aaaux = aux_saida_mux_in;
 	aaaux2 = aux_switch;
 	eoin = in;
 	extensor1 = aux_out_sinal1;
+	zerum = ZERO;
 end
+//////////////////////////////////////
 
 mux4 Chamada12(.entrada1(imediato), .entrada2(aux_switch), 
                .chave_mux4(in), .saida_mux4(aux_saida_mux_in));
@@ -138,10 +156,13 @@ mux2 Chamada14 (.entrada1(aux_saida_mux_mem), .entrada2(aux_out_sinal1), .entrad
                 .chave_mux2(loadi), .saida_mux2(aux_saida_mux_loadi));
 
 wire [31:0] aux_saida_mux_loadi;
+
+///////testes///////////////////////
 output reg [31:0] mux_loadi;
 always@(*) begin
  mux_loadi = aux_saida_mux_loadi;
 end
+///////////////////////////////////
 
 
 mux2 Chamada15 (.entrada1(aux_saida_ULA), .entrada2(dado2), .entrada3(aux_out_sinal1), 
@@ -150,11 +171,9 @@ mux2 Chamada15 (.entrada1(aux_saida_ULA), .entrada2(dado2), .entrada3(aux_out_si
 wire [31:0] aux_saida_emd;
 
 
-mem_ram Chamada16(.data(dado2), .read_addr(aux_saida_emd), .write_addr(aux_saida_emd),      
-                 .memwrite(memwrite), .memread(memread), .read_clock(clock), 
-					  .write_clock(clock), .saida_ram(aux_saida_ram));
-//read clock pode precisar de um delay do clock, como visto no teste inicial, para evitar lixo
-					  
+mem_ram Chamada16(.data(dado2), .addr(aux_saida_emd), .memwrite(memwrite), 
+					   .memread(memread), .clock(clock), .saida_ram(aux_saida_ram));
+						
 wire [31:0] aux_saida_ram;	  
 			
 	
@@ -180,24 +199,37 @@ mux1 Chamada20 (.entrada1(aux_saida_branch), .entrada2(entrada_jump),
 wire [31:0] entrada_jump = {aux_saida_adic[31:28], aux_out_sinal2[27:0]};				
 wire [31:0] aux_saida_jump;				
 
-output [31:0] teste_conc;
-assign teste_conc = entrada_jump;
+
+//////testes//////////////////////////
+output reg [31:0] teste_conc;
+always@(*) begin
+	teste_conc = entrada_jump;
+end
+//////////////////////////////////////
+
 
 mux2 Chamada21 (.entrada1(aux_saida_ram), .entrada2(aux_saida_ULA), 
 					 .entrada3(aux_saida_adic), .chave_mux2(memtoreg), 
 					 .saida_mux2(aux_saida_mux_mem));
-					 
-output reg [31:0] muxr1, muxr2, muxr3;
+
+
+////////testes//////////////////////////					 
+output reg [31:0] muxr_jump, muxr2, muxr3;
 
 always @(*) begin
-	muxr1 = aux_saida_ram;
+	muxr_jump = aux_saida_jump;
 	muxr2 = aux_saida_ULA;
 	muxr3 = aux_saida_adic;
 end
+////////////////////////////////////////
 					 
 wire [31:0] aux_saida_mux_mem;
+
+//testes//////////////////
 output [31:0] mux_mem;
 assign mux_mem = aux_saida_mux_mem;
+////////////////////////////////////////
+
 
 saida_fpga Chamada22 (.entrada_modulo(dado1), 
 							 .clock_out(clock), .sinal_out(out), 
@@ -209,7 +241,7 @@ decodificador_BCD Chamada23 (.bcd(dp1), .segmentos(segdp1));
 decodificador_BCD Chamada24 (.bcd(dp2), .segmentos(segdp2));
 decodificador_BCD Chamada25 (.bcd(dp3), .segmentos(segdp3));
 decodificador_BCD Chamada26 (.bcd(dp4), .segmentos(segdp4));
-output [6:0] segdp1, segdp2, segdp3, segdp4;
+output [0:6] segdp1, segdp2, segdp3, segdp4;
 
 //mudar os testes memram, incluir o nop em cada coisa
 

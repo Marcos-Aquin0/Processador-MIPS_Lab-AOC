@@ -1,14 +1,15 @@
 module ULA_controle(AluOP, funct, sinal_controle);
 
-//duas entradas: o sinal de controle e o funct
+//duas entradas: o sinal AluOP e o funct
 input [3:0] AluOP;
 input [3:0] funct;
+//saida de controle da ULA
 output reg [3:0] sinal_controle;
 
 always @ (*)
 begin
 	case(AluOP)
-		4'b0000: sinal_controle = 2;//load and store - soma
+		4'b0000: sinal_controle = 2;//load and store - soma de endereco
 		4'b0001: //tipo R
 			begin
 				case (funct)
@@ -21,14 +22,15 @@ begin
 					4'b0110: sinal_controle = 6; //shamt direita
 				   4'b0111: sinal_controle = 7; //shamt esquerda
 					4'b1000: sinal_controle = 8; //nor
-					default: sinal_controle = 15; //jr
+					4'b1001: sinal_controle = 13; //jr
+					default: sinal_controle = 15; 
 				endcase
 			end
 
 		4'b0010: sinal_controle = 9;//beq
 		4'b0011: sinal_controle = 10;//blt 
 		4'b0100: sinal_controle = 11;//bgt 
-		4'b0101: sinal_controle = 12;//bnq
+		4'b0101: sinal_controle = 12;//bne
 		4'b0110: sinal_controle = 0;//andi
 		4'b0111: sinal_controle = 1;//ori
 		4'b1000: sinal_controle = 2;//addi
