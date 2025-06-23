@@ -1,12 +1,17 @@
 module processador#(parameter DATA_WIDTH=32, parameter ADDR_WIDTH=8)
-				  (congela, clock_fpga, reset,
-					switches,
-				   segdp1, segdp2, segdp3, segdp4, teste_halt);
+				  (congela_sw, clock_fpga, reset,
+					switches, botao, reset_n,
+				   segdp1, segdp2, segdp3, segdp4, 
+					teste_halt, teste_pc, entrada, saida);
 					    
 //inputs e outputs de cada unidade para testar		  
+input botao, reset_n;
+botao_enter Chamada27 (.clk(clock_fpga), .reset_n(reset_n), .botao(botao), .req_congela_in(congela_in), .req_congela_out(congela_out), .congela(congela));
+wire led_pc;
+wire congela;
 
-input congela, clock_fpga;					 
-divisor_freq Chamada0 (.congela(congela), .halt(halt), .clock_fpga(clock_fpga), .new_clock(clock));
+input congela_sw, clock_fpga;					 
+divisor_freq Chamada0 (.congela_sw(congela_sw), .congela(congela), .halt(halt), .clock_fpga(clock_fpga), .new_clock(clock), .led_pc(led_pc));
 		
 wire clock; 
 input reset;	
@@ -55,15 +60,19 @@ unidade_controle Chamada5 (.opcode(opcode), .AluOP(AluOP), .regdst(regdst),
 									.memtoreg(memtoreg), .alusrc(alusrc), .emd(emd),
 									.loadi(loadi), .jump(jump), .out(out), .jumpreg(jumpreg),
 									.branch(branch), .memread(memread), .memwrite(memwrite),
-									.regwrite(regwrite), .halt(halt), .nop(nop), .in(in));
+									.regwrite(regwrite), .halt(halt), .nop(nop), .in(in),
+									.congela_in(congela_in), .congela_out(congela_out));
 
 wire [3:0] AluOP;
 wire [1:0] regdst, memtoreg, alusrc, emd, loadi;
 wire jump, out, jumpreg, branch, memread, memwrite, regwrite, halt, nop, in;
 
-output reg teste_halt;
+output reg teste_halt, teste_pc, entrada, saida;
 always @(*) begin
 	teste_halt = halt;
+	teste_pc = led_pc;
+	entrada = congela_in;
+	saida = congela_out;
 end
 
 ULA_controle Chamada6(.AluOP(AluOP), .funct(funct), .sinal_controle(sinal_aux_con));
@@ -162,8 +171,17 @@ mux2 Chamada21 (.entrada1(aux_saida_ram), .entrada2(aux_saida_ULA),
 					 
 wire [31:0] aux_saida_mux_mem;
 
-saida_fpga Chamada22 (.entrada_modulo(dado1), 
-							 .clock_out(clock), .sinal_out(out), 
+reg [31:0] aux_saida;
+always @ (*) begin
+	if(entrada == 1) begin
+		aux_saida = aux_out_sinal1;
+	end else if (saida == 1) begin
+		aux_saida = dado1;
+	end
+end
+
+saida_fpga Chamada22 (.entrada_modulo(aux_saida),
+							 .clock_out(clock_fpga), .sinal_out(out), 
 							 .dp4(dp4), .dp3(dp3), .dp2(dp2), .dp1(dp1));
 
 wire [31:0] dp4, dp3, dp2, dp1;

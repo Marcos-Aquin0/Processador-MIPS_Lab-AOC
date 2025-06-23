@@ -14,7 +14,7 @@ module mem_rom
 
 	initial
 	begin
-		$readmemb("rom_init4.txt", rom); 
+		$readmemb("gcd.txt", rom); 
 	end
 
 	always @ (posedge clock_rom)

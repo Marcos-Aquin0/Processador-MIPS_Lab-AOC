@@ -17,12 +17,13 @@ module BANCO_REG(clock, reg_write, reg_leitura1, reg_leitura2,
 	//para testes, atribuir valores iniciais para os registradores
 	initial begin
 		integer i;
-		for (i = 0; i < 64; i = i + 1) begin
-			regs[i] = 1;
+		for (i = 0; i < 61; i = i + 1) begin
+			regs[i] = 0;
 			
 		end
-		//regs[9] = 0;
-		//regs[10] = 1;
+		regs[61] = 1;
+		regs[62] = 4;
+		regs[63] = 0;
 	end
 	
 	always @  (negedge clock) 

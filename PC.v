@@ -6,7 +6,7 @@ module PC(clock_pc, reset, prox_end, halt, pc);
 	output reg [31:0] pc;
 	
 
-	always @(posedge clock_pc or posedge reset or posedge halt)
+	always @(posedge clock_pc or posedge reset)
 	begin
 		if (reset) begin
             pc <= 32'h0;// Reset síncrono

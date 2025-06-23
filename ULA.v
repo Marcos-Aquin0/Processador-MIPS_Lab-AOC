@@ -30,7 +30,9 @@ begin
 		 4'b1001: saida= (A == B)? 32'd0 : 32'd1; //beq
 		 4'b1010: saida= (A < B)? 32'd0 : 32'd1; //blt
 		 4'b1011: saida= (A > B)? 32'd0 : 32'd1; //bgt
-		 4'b1100: saida= (A != B)? 32'd0 : 32'd1; //bne
+		 4'b1100: saida= (A != B)? 32'd0 : 32'd1; //bnq
+		 4'b1101: saida= (A < B)? 32'd1 : 32'd0; //bge
+		 4'b1110: saida= (A > B)? 32'd1 : 32'd0; //ble
 		 default: saida= 32'd0; //se o controle não é nenhum desses
 	endcase
 

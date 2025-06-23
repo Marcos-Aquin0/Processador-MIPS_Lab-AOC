@@ -87,14 +87,14 @@ set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform14.vwf
 set_global_assignment -name TEXT_FILE rom_init2.txt
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform15.vwf
 set_global_assignment -name VERILOG_FILE processador_teste.v
-set_location_assignment PIN_AB28 -to switches[0]
-set_location_assignment PIN_AC28 -to switches[1]
-set_location_assignment PIN_AC27 -to switches[2]
-set_location_assignment PIN_AD27 -to switches[3]
-set_location_assignment PIN_AB27 -to switches[4]
-set_location_assignment PIN_AC26 -to switches[5]
-set_location_assignment PIN_AD26 -to switches[6]
-set_location_assignment PIN_AB26 -to switches[7]
+set_location_assignment PIN_Y16 -to switches[0]
+set_location_assignment PIN_AD21 -to switches[1]
+set_location_assignment PIN_AE16 -to switches[2]
+set_location_assignment PIN_AD15 -to switches[3]
+set_location_assignment PIN_AE15 -to switches[4]
+set_location_assignment PIN_AC19 -to switches[5]
+set_location_assignment PIN_AF16 -to switches[6]
+set_location_assignment PIN_AD19 -to switches[7]
 set_location_assignment PIN_G18 -to segdp1[0]
 set_location_assignment PIN_Y19 -to segdp4[6]
 set_location_assignment PIN_AF23 -to segdp4[5]
@@ -138,17 +138,25 @@ set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform16.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform17.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform18.vwf
-set_location_assignment PIN_AG25 -to congela
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform19.vwf
 set_global_assignment -name TEXT_FILE rom_init3.txt
 set_global_assignment -name TEXT_FILE rom_init4.txt
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform20.vwf
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform21.vwf
-set_location_assignment PIN_AD22 -to reset
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_location_assignment PIN_AG25 -to reset
 set_global_assignment -name TEXT_FILE rom_init5.txt
 set_location_assignment PIN_G19 -to teste_halt
 set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform23.vwf
+set_global_assignment -name TEXT_FILE gcd.txt
+set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+set_global_assignment -name VERILOG_FILE botao_enter.v
+set_location_assignment PIN_AD22 -to congela_sw
+set_location_assignment PIN_E21 -to teste_pc
+set_location_assignment PIN_F19 -to entrada
+set_location_assignment PIN_F21 -to saida
+set_location_assignment PIN_AB22 -to botao
+set_global_assignment -name VECTOR_WAVEFORM_FILE Waveform24.vwf
+set_location_assignment PIN_AC15 -to reset_n
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
