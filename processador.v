@@ -80,10 +80,9 @@ ULA_controle Chamada6(.AluOP(AluOP), .funct(funct), .sinal_controle(sinal_aux_co
 
 wire [3:0] sinal_aux_con;
 
-mux3 Chamada7 (.entrada1(rt), .entrada2(rd), .ra(reg31), .chave_mux3(regdst), 
+mux3 Chamada7 (.entrada1(rt), .entrada2(rd), .chave_mux3(regdst), 
 					.saida_mux3(aux_saida_reg_mux3)); 
 //ra tem que ser um reg do banco de registradores
-wire reg31 = 32'd31;
 
 wire [31:0] aux_saida_reg_mux3;
 
@@ -146,13 +145,13 @@ mux1 Chamada17 (.entrada1(aux_saida_adic), .entrada2(dado2),
 
 wire [31:0] aux_saida_jumpreg;
 					
-adiciona Chamada18 (.entrada1(aux_saida_adic), .entrada2(aux_out_sinal1), 
-						  .saida_adiciona(aux_saida_adic2), .clock_adiciona(clock));
+//adiciona Chamada18 (.entrada1(aux_saida_adic), .entrada2(aux_out_sinal1), 
+	//					  .saida_adiciona(aux_saida_adic2), .clock_adiciona(clock));
 						 
-wire [31:0] aux_saida_adic2;
+//wire [31:0] aux_saida_adic2;
 					
 			
-mux5 Chamada19 (.entrada1(aux_saida_jumpreg), .entrada2(aux_saida_adic2), 
+mux5 Chamada19 (.entrada1(aux_saida_jumpreg), .entrada2(aux_out_sinal1), 
               .sinal_branch(branch), .zero(ZERO), .saida_mux5(aux_saida_branch));
 
 wire [31:0] aux_saida_branch;
