@@ -14,7 +14,7 @@ module mem_rom
 
 	initial
 	begin
-		$readmemb("sort.txt", rom); 
+		$readmemb("bubblesort.txt", rom); 
 	end
 
 	always @ (posedge clock_rom)

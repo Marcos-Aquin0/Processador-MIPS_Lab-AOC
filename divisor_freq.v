@@ -23,7 +23,7 @@ always @ (posedge clock_fpga or posedge congela_sw or posedge congela)
 			new_clock <= 1'b0;
          led_pc <= 1'b0;
 		end
-		else if (OUT == 24'd3125000) //3125000
+		else if (OUT == 24'd1562500) //3125000
 			begin
 				OUT <= 24'd0;
 				new_clock <= 1;
